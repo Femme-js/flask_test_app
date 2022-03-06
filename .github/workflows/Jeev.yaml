@@ -31,4 +31,4 @@ jobs:
           push: true
           tags: test_app:latest
           context: .
-          file: "DockerFile"
+          file: "Dockerfile"
