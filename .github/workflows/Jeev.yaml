@@ -1,0 +1,34 @@
+name: pythonCI/CD
+
+on:
+  push:
+    branches: [master]
+
+  pull_request:
+    branches: [master]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  publish-flask-app:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: test_app:latest
+          context: .
+          file: "DockerFile"
